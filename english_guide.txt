@@ -1,0 +1,435 @@
+ENGLISH LEARNING COMPREHENSIVE GUIDE
+======================================
+Grammar Rules, TOEFL/IELTS Tips, Writing & Speaking Guide
+Compiled for English Language Learners
+
+
+═══════════════════════════════════════
+PART 1: CORE GRAMMAR RULES
+═══════════════════════════════════════
+
+1. SUBJECT-VERB AGREEMENT
+--------------------------
+The subject and verb in a sentence must agree in number (singular or plural).
+
+Rules:
+- Singular subject → singular verb (add -s or -es)
+- Plural subject → plural verb (no -s)
+
+Examples:
+✅ She runs every morning.
+✅ They run every morning.
+❌ She run every morning. (wrong)
+❌ They runs every morning. (wrong)
+
+Special cases:
+- "Everyone, anyone, someone, nobody" → singular verb
+  ✅ Everyone is welcome here.
+- Collective nouns (team, family, group) → usually singular
+  ✅ The team is practicing now.
+- "Neither...nor / Either...or" → verb agrees with the nearest subject
+  ✅ Neither the students nor the teacher was late.
+
+
+2. VERB TENSES
+--------------------------
+English has 12 main tenses. The most commonly used:
+
+SIMPLE PRESENT — habits, facts, general truths
+Formula: Subject + V1 (+ s/es for he/she/it)
+✅ I study English every day.
+✅ She works at a hospital.
+
+SIMPLE PAST — completed actions in the past
+Formula: Subject + V2
+✅ I studied last night.
+✅ She worked yesterday.
+
+PRESENT CONTINUOUS — actions happening now or temporary situations
+Formula: Subject + is/am/are + V-ing
+✅ I am studying right now.
+✅ She is working on a project this week.
+
+PRESENT PERFECT — past actions with present relevance
+Formula: Subject + has/have + V3
+✅ I have studied English for 3 years.
+✅ She has worked here since 2020.
+
+PAST CONTINUOUS — actions in progress at a specific past time
+Formula: Subject + was/were + V-ing
+✅ I was studying when she called.
+
+FUTURE SIMPLE — predictions, decisions, promises
+Formula: Subject + will + V1
+✅ I will study harder next semester.
+
+
+3. ARTICLES (A, AN, THE)
+--------------------------
+A — used before singular countable nouns starting with a consonant sound
+✅ a book, a university (note: 'u' sounds like 'yu' = consonant sound)
+
+AN — used before singular countable nouns starting with a vowel sound
+✅ an apple, an hour (note: 'h' is silent = vowel sound)
+
+THE — used for specific nouns, things mentioned before, or unique things
+✅ The sun rises in the east.
+✅ I saw a dog. The dog was brown.
+
+NO ARTICLE — used with plural nouns in general statements, uncountable nouns
+✅ Dogs are loyal animals.
+✅ Water is essential for life.
+
+
+4. PREPOSITIONS OF TIME
+--------------------------
+IN — months, years, seasons, parts of day
+✅ in January, in 2024, in summer, in the morning
+
+ON — specific days, dates
+✅ on Monday, on March 9th, on Christmas Day
+
+AT — specific times, holiday periods
+✅ at 7 o'clock, at noon, at night, at Christmas
+
+
+5. PREPOSITIONS OF PLACE
+--------------------------
+IN — inside an area, city, country
+✅ in the box, in Jakarta, in Indonesia
+
+ON — on a surface, on a street
+✅ on the table, on Sudirman Street
+
+AT — specific point/location
+✅ at the door, at the station, at school
+
+
+6. CONDITIONALS
+--------------------------
+TYPE 0 — General truths
+If + present simple, present simple
+✅ If you heat water to 100°C, it boils.
+
+TYPE 1 — Real/possible future situations
+If + present simple, will + base verb
+✅ If it rains tomorrow, I will stay home.
+
+TYPE 2 — Unreal/hypothetical present situations
+If + past simple, would + base verb
+✅ If I had more time, I would study abroad.
+
+TYPE 3 — Unreal past situations
+If + past perfect, would have + past participle
+✅ If I had studied harder, I would have passed.
+
+
+7. PASSIVE VOICE
+--------------------------
+Active: Subject + verb + object
+✅ The teacher corrects the homework.
+
+Passive: Object + to be + past participle (+ by + agent)
+✅ The homework is corrected by the teacher.
+
+Use passive when:
+- The doer is unknown or unimportant
+- You want to emphasize the action/result
+
+
+═══════════════════════════════════════
+PART 2: TOEFL TIPS & STRATEGIES
+═══════════════════════════════════════
+
+TOEFL iBT OVERVIEW
+------------------
+TOEFL iBT tests 4 skills: Reading, Listening, Speaking, Writing
+Total score: 0-120 (each section: 0-30)
+Duration: About 3 hours
+
+Common target scores:
+- Undergraduate: 61-80
+- Graduate: 80-100
+- Top universities: 100+
+
+READING SECTION TIPS
+--------------------
+1. Read the passage quickly first to get the main idea
+2. Pay attention to topic sentences (usually first sentence of each paragraph)
+3. For vocabulary questions — use context clues, not memorized definitions
+4. For "main idea" questions — avoid answers that are too specific or too broad
+5. For inference questions — the answer must be logically supported by the text
+6. Time management: about 18 minutes per passage
+
+Common question types:
+- Factual information: Find specific information stated in the text
+- Vocabulary in context: What does the word mean in this context?
+- Inference: What can be concluded from the passage?
+- Main idea: What is the passage mainly about?
+- Sentence insertion: Where does this sentence best fit?
+
+LISTENING SECTION TIPS
+----------------------
+1. Take notes while listening — especially names, numbers, key terms
+2. Focus on main ideas, not every detail
+3. Pay attention to speaker's tone and attitude
+4. For conversations: what is the problem and what is the solution?
+5. For lectures: what is the main topic and what are the supporting points?
+
+SPEAKING SECTION TIPS
+---------------------
+Task 1 (Independent): Give your opinion on a familiar topic
+- State your opinion clearly in the first sentence
+- Give 2 supporting reasons with examples
+- Speak clearly and at a natural pace
+- Template: "I believe/prefer... because... First... Second... Therefore..."
+
+Tasks 2-4 (Integrated): Reading + Listening + Speaking
+- Summarize what you read AND heard
+- Show connection between the two sources
+- Use transitions: "According to the reading... However, the professor argues..."
+
+WRITING SECTION TIPS
+--------------------
+Task 1 (Integrated): Reading + Listening → 150-225 words
+- Summarize the lecture and how it relates to the reading
+- The lecture usually CHALLENGES the reading
+- Use phrases: "The professor argues that... This contradicts the reading which states..."
+
+Task 2 (Independent): Essay on a given topic → 300+ words
+Essay structure:
+- Introduction: Hook + background + thesis statement
+- Body paragraph 1: Point 1 + explanation + example
+- Body paragraph 2: Point 2 + explanation + example
+- Conclusion: Restate thesis + summary + closing thought
+
+Useful transitions:
+- Adding: Furthermore, Moreover, In addition, Additionally
+- Contrasting: However, Nevertheless, On the other hand, Although
+- Giving examples: For instance, For example, Such as, To illustrate
+- Concluding: In conclusion, Therefore, Thus, As a result
+
+
+═══════════════════════════════════════
+PART 3: IELTS TIPS & STRATEGIES
+═══════════════════════════════════════
+
+IELTS OVERVIEW
+--------------
+IELTS tests 4 skills: Listening, Reading, Writing, Speaking
+Band score: 0-9 (each section)
+Two types: Academic (university) and General Training (work/migration)
+
+Common target band scores:
+- University admission: 6.0-7.0
+- Professional registration: 7.0+
+- Top universities: 7.5-8.0
+
+READING TIPS (Academic)
+-----------------------
+1. Skim the passage first — read title, headings, first and last sentences
+2. Read questions BEFORE reading the passage in detail
+3. For True/False/Not Given:
+   - TRUE: information matches the passage
+   - FALSE: information contradicts the passage
+   - NOT GIVEN: information not mentioned at all
+4. For matching headings: identify the main idea of each paragraph
+5. Answers appear in order in the passage (except matching tasks)
+
+LISTENING TIPS
+--------------
+1. Read the questions during the preparation time
+2. Answers come in the order you hear them
+3. Spell names and places carefully
+4. Don't leave blanks — make an educated guess
+5. Check grammar: if the answer is a verb, make sure it fits grammatically
+
+WRITING TASK 1 (Academic) — Describe a graph/chart/diagram
+- Overview is ESSENTIAL — write 2-3 sentences about the main trend
+- Compare and contrast the most significant features
+- Use data to support your description
+- Do NOT give opinions or conclusions
+- Useful language: "rose sharply to...", "remained stable at...", "accounted for..."
+
+WRITING TASK 2 — Essay (250+ words)
+Same structure as TOEFL Task 2:
+Introduction → Body 1 → Body 2 → Conclusion
+
+Common essay types:
+- Opinion/Argumentative: "Do you agree or disagree?"
+- Discussion: "Discuss both views and give your opinion"
+- Problem-solution: "What are the problems? What are the solutions?"
+- Advantages-disadvantages: "Discuss the advantages and disadvantages"
+
+SPEAKING TIPS
+-------------
+Part 1 (Introduction): 4-5 minutes — questions about yourself, home, work, interests
+- Give extended answers — don't just say yes/no
+- Use a variety of vocabulary and tenses
+
+Part 2 (Long turn): 2 minutes — speak about a topic card
+- Use the 1 minute preparation time to make notes
+- Cover all the points on the card
+- Keep talking for the full 2 minutes
+
+Part 3 (Discussion): 4-5 minutes — abstract questions related to Part 2 topic
+- Give well-developed answers
+- Show ability to discuss ideas, speculate, compare
+
+
+═══════════════════════════════════════
+PART 4: WRITING SKILLS
+═══════════════════════════════════════
+
+PARAGRAPH STRUCTURE
+-------------------
+Every good paragraph has 3 parts:
+1. Topic sentence — states the main idea
+2. Supporting sentences — explain, give evidence, examples
+3. Concluding sentence — wraps up the paragraph
+
+Example:
+"Regular exercise has numerous benefits for mental health. [TOPIC]
+Studies show that physical activity releases endorphins, which improve mood and reduce anxiety. For instance, people who exercise at least 30 minutes a day report lower levels of stress compared to those who are sedentary. [SUPPORT]
+Therefore, incorporating exercise into daily routines is an effective way to maintain emotional wellbeing. [CONCLUSION]"
+
+ESSAY STRUCTURE
+---------------
+Introduction (10-15% of essay):
+- Hook: interesting fact, question, or statement
+- Background: context for the topic
+- Thesis: your main argument/position
+
+Body (70-80% of essay):
+- Each paragraph = one main idea
+- Start with topic sentence
+- Support with evidence and examples
+- Use transitions between paragraphs
+
+Conclusion (10-15% of essay):
+- Restate thesis (in different words)
+- Summarize main points
+- Closing thought/call to action/broader implication
+
+USEFUL TRANSITIONS
+------------------
+To add information:
+Furthermore, Moreover, In addition, Additionally, Also, Besides
+
+To show contrast:
+However, Nevertheless, On the other hand, Although, Despite, In contrast
+
+To show cause/effect:
+Therefore, Thus, As a result, Consequently, Due to, Because of
+
+To give examples:
+For example, For instance, Such as, To illustrate, Namely
+
+To conclude:
+In conclusion, To summarize, Overall, In summary, Finally
+
+
+═══════════════════════════════════════
+PART 5: SPEAKING SKILLS
+═══════════════════════════════════════
+
+COMMON SPEAKING MISTAKES TO AVOID
+-----------------------------------
+1. Translating directly from Indonesian to English
+   ❌ "I go to school by foot" → ✅ "I walk to school"
+   ❌ "My age is 20 years" → ✅ "I am 20 years old"
+
+2. Wrong use of "since" and "for"
+   ❌ "I have studied English since 3 years"
+   ✅ "I have studied English for 3 years"
+   ✅ "I have studied English since 2021"
+
+3. Forgetting to add -s for third person singular
+   ❌ "She go to work every day"
+   ✅ "She goes to work every day"
+
+USEFUL SPEAKING PHRASES
+-----------------------
+Agreeing:
+- I completely agree with that.
+- That's a good point.
+- Absolutely! / Exactly!
+- I couldn't agree more.
+
+Disagreeing (politely):
+- I see your point, but...
+- I'm not sure I agree because...
+- That's interesting, however...
+- I respectfully disagree.
+
+Asking for clarification:
+- Could you elaborate on that?
+- What do you mean by...?
+- Could you give an example?
+- I'm not sure I understand. Could you repeat that?
+
+Buying time while thinking:
+- That's an interesting question...
+- Let me think about that for a moment...
+- Well, as far as I know...
+- That's a good question. I think...
+
+PRONUNCIATION TIPS
+------------------
+Common mispronunciations by Indonesian speakers:
+- "Comfortable" → say "KUMF-ter-bul" (3 syllables, not 4)
+- "Vegetable" → say "VEJ-tuh-bul" (3 syllables)
+- "Wednesday" → say "WENZ-day" (the 'd' is silent)
+- "Clothes" → say "KLOHZ" (the 'th' sounds like 'z')
+- "Months" → say "MUNTHS" (don't forget the 'ths' at the end)
+- "Colleagues" → say "KOL-eegz"
+- "Especially" → say "es-PESH-uh-lee" (not "eks-pesh-uh-lee")
+- "Specific" → say "spuh-SIF-ik" (not "eks-peh-SIF-ik")
+
+
+═══════════════════════════════════════
+PART 6: COMMON ENGLISH MISTAKES BY
+         INDONESIAN SPEAKERS
+═══════════════════════════════════════
+
+1. DOUBLE SUBJECT
+❌ My mother she is a teacher.
+✅ My mother is a teacher.
+
+2. WRONG WORD ORDER
+❌ I have problem a.
+✅ I have a problem.
+
+3. MISSING ARTICLE
+❌ She is student.
+✅ She is a student.
+
+4. WRONG PRONOUN
+❌ My friend, he name is Budi.
+✅ My friend's name is Budi.
+
+5. OVERUSING "VERY"
+❌ It is very very beautiful.
+✅ It is extremely beautiful. / It is gorgeous.
+
+6. "DISCUSS ABOUT"
+❌ Let's discuss about the topic.
+✅ Let's discuss the topic. (no "about" needed)
+
+7. "EXPLAIN ABOUT"
+❌ Can you explain about this?
+✅ Can you explain this?
+
+8. "MENTION ABOUT"
+❌ She mentioned about the problem.
+✅ She mentioned the problem.
+
+9. WRONG USE OF "BORING" vs "BORED"
+❌ I am boring. (means you are a boring person!)
+✅ I am bored. (you feel bored)
+✅ The class is boring. (the class causes boredom)
+
+10. WRONG USE OF "INTERESTING" vs "INTERESTED"
+❌ I am interesting in English.
+✅ I am interested in English.
+✅ English is interesting.
