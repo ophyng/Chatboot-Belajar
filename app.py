@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -58,9 +57,41 @@ st.markdown("""
 @st.cache_resource
 def load_all_data():
     base = os.path.dirname(os.path.abspath(__file__))
-    model_dir = os.path.join(base, 'models')
-    with open(os.path.join(model_dir, 'all_data.pkl'), 'rb') as f:
-        return pickle.load(f)
+
+    # Load Grammar Correction CSV
+    grammar_path = os.path.join(base, 'Grammar Correction.csv')
+    if not os.path.exists(grammar_path):
+        grammar_path = os.path.join(base, 'Grammar_Correction.csv')
+    
+    df_grammar = pd.read_csv(grammar_path)
+    df_grammar['Ungrammatical Statement'] = df_grammar['Ungrammatical Statement'].apply(
+        lambda x: re.sub(r'\s+', ' ', re.sub(r'^\d+\.\s*', '', str(x).strip())) if isinstance(x, str) else '')
+    df_grammar['Standard English'] = df_grammar['Standard English'].apply(
+        lambda x: re.sub(r'\s+', ' ', re.sub(r'^\d+\.\s*', '', str(x).strip())) if isinstance(x, str) else '')
+    df_grammar['wrong_lower'] = df_grammar['Ungrammatical Statement'].str.lower()
+    df_grammar['correct_lower'] = df_grammar['Standard English'].str.lower()
+    df_grammar = df_grammar.drop_duplicates(subset=['wrong_lower']).reset_index(drop=True)
+
+    # Load vocab & guides
+    vocab_path = os.path.join(base, 'vocabulary_idioms.csv')
+    phrasal_path = os.path.join(base, 'phrasal_verbs.csv')
+    expanded_path = os.path.join(base, 'vocabulary_expanded.csv')
+    guide_complete_path = os.path.join(base, 'english_complete_guide.txt')
+    guide_toefl_path = os.path.join(base, 'english_guide.txt')
+
+    guide_complete, guide_toefl = '', ''
+    if os.path.exists(guide_complete_path):
+        with open(guide_complete_path, 'r', encoding='utf-8') as f:
+            guide_complete = f.read()
+    if os.path.exists(guide_toefl_path):
+        with open(guide_toefl_path, 'r', encoding='utf-8') as f:
+            guide_toefl = f.read()
+
+    return {
+        'grammar': df_grammar,
+        'guide_complete': guide_complete,
+        'guide_toefl': guide_toefl
+    }
 
 try:
     data = load_all_data()
@@ -92,7 +123,6 @@ def ask_hf(messages):
         except Exception:
             continue
     return "Maaf, semua model AI sedang tidak tersedia. Coba lagi nanti ya!"
-
 
 def exact_match(text):
     low = text.strip().lower()
@@ -162,10 +192,10 @@ if 'messages' not in st.session_state:
 if len(st.session_state.messages) == 0:
     st.markdown("""
     <div style='display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:1.5rem;'>
-        <div style='background:#ede9ff;border:1px solid #7c6bff;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#5a3fcc;cursor:pointer;'>✏️ Koreksi kalimat saya</div>
-        <div style='background:#ffe0ef;border:1px solid #ff6b9d;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#c2185b;cursor:pointer;'>🌐 Translate ke English</div>
-        <div style='background:#e0f5ee;border:1px solid #06d6a0;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#087f5b;cursor:pointer;'>❓ Tanya grammar</div>
-        <div style='background:#fff9e0;border:1px solid #ffd43b;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#856f00;cursor:pointer;'>📚 Tips TOEFL/IELTS</div>
+        <div style='background:#ede9ff;border:1px solid #7c6bff;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#5a3fcc;'>✏️ Koreksi kalimat saya</div>
+        <div style='background:#ffe0ef;border:1px solid #ff6b9d;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#c2185b;'>🌐 Translate ke English</div>
+        <div style='background:#e0f5ee;border:1px solid #06d6a0;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#087f5b;'>❓ Tanya grammar</div>
+        <div style='background:#fff9e0;border:1px solid #ffd43b;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#856f00;'>📚 Tips TOEFL/IELTS</div>
     </div>
     """, unsafe_allow_html=True)
 
