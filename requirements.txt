@@ -5,3 +5,7 @@ huggingface_hub
 pandas
 numpy
 plotly
+gtts
+PyPDF2
+Pillow
+pytesseract
