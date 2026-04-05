@@ -75,6 +75,11 @@ div[data-testid="stToggle"] label {
     font-weight: 600 !important;
     color: #5a3fcc !important;
 }
+/* Hide file uploader label */
+[data-testid="stFileUploaderDropzone"] {
+    padding: 8px !important;
+    border-radius: 10px !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -223,8 +228,14 @@ def format_diff(wrong, correct):
             html += f'{t["word"]} '
     return html
 
+SYSTEM_PROMPT = f"""
+Kamu adalah GrammarAI — asisten bahasa Inggris yang cerdas, friendly, dan sangat membantu untuk pelajar Indonesia.
+Knowledge base: {guide[:3000]}
+Kamu bisa koreksi grammar, translate, jelaskan rules, kasih contoh, jawab tentang vocab/idioms/TOEFL/IELTS dan topik umum lainnya.
+Format: penjelasan pakai Bahasa Indonesia, contoh dalam English, friendly dan encouraging!
+"""
+
 def process_message(prompt):
-    """Process a message and return the reply"""
     grammar_result = exact_match(prompt) or fuzzy_match(prompt, 0.82) or fuzzy_match(prompt, 0.65)
 
     if grammar_result:
@@ -249,14 +260,8 @@ def process_message(prompt):
         ai_messages = [{"role": "system", "content": SYSTEM_PROMPT}]
         for m in st.session_state.messages:
             ai_messages.append({"role": m['role'], "content": m['content']})
+        ai_messages.append({"role": "user", "content": prompt})
         return ask_hf(ai_messages)
-
-SYSTEM_PROMPT = f"""
-Kamu adalah GrammarAI — asisten bahasa Inggris yang cerdas, friendly, dan sangat membantu untuk pelajar Indonesia.
-Knowledge base: {guide[:3000]}
-Kamu bisa koreksi grammar, translate, jelaskan rules, kasih contoh, jawab tentang vocab/idioms/TOEFL/IELTS dan topik umum lainnya.
-Format: penjelasan pakai Bahasa Indonesia, contoh dalam English, friendly dan encouraging!
-"""
 
 # ===== SESSION STATE =====
 if 'messages' not in st.session_state:
@@ -270,7 +275,7 @@ if 'uploaded_name' not in st.session_state:
 if 'trigger_prompt' not in st.session_state:
     st.session_state.trigger_prompt = None
 
-# ===== 4 SUGGESTION BUTTONS (CLICKABLE) =====
+# ===== 4 SUGGESTION BUTTONS (hanya muncul saat belum ada chat) =====
 if len(st.session_state.messages) == 0:
     col1, col2, col3, col4 = st.columns(4)
     with col1:
@@ -311,8 +316,22 @@ for msg in st.session_state.messages:
     with st.chat_message(msg['role']):
         st.markdown(msg['content'], unsafe_allow_html=True)
 
-# ===== TOOLBAR: di bawah chat, di atas input =====
-st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+# ===== CHAT INPUT =====
+if prompt := st.chat_input("Ketik kalimat untuk dikoreksi, atau tanya apapun..."):
+    st.session_state.messages.append({'role': 'user', 'content': prompt})
+    with st.chat_message('user'):
+        st.markdown(prompt)
+    with st.chat_message('assistant'):
+        with st.spinner("Thinking..."):
+            full_reply = process_message(prompt)
+            if st.session_state.tts_enabled:
+                full_reply += text_to_speech(full_reply)
+            st.markdown(full_reply, unsafe_allow_html=True)
+            st.session_state.messages.append({'role': 'assistant', 'content': full_reply})
+
+# ===== TOOLBAR: Suara + Upload + Clear — di BAWAH input =====
+st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
+st.markdown("<hr style='border:none;border-top:1px solid #e0e0f0;margin:4px 0 10px;'>", unsafe_allow_html=True)
 
 col_tts, col_upload, col_clear = st.columns([1.5, 3.5, 1.5])
 
@@ -325,7 +344,7 @@ with col_tts:
 
 with col_upload:
     uploaded_file = st.file_uploader(
-        "Upload",
+        "Upload PDF/Gambar",
         type=['pdf', 'png', 'jpg', 'jpeg'],
         label_visibility="collapsed",
         help="Upload PDF atau gambar untuk dianalisis grammarnya"
@@ -370,17 +389,3 @@ if st.session_state.uploaded_text and st.session_state.uploaded_name:
                 st.session_state.uploaded_text = None
                 st.session_state.uploaded_name = None
             st.rerun()
-
-# ===== CHAT INPUT =====
-if prompt := st.chat_input("Ketik kalimat untuk dikoreksi, atau tanya apapun..."):
-    st.session_state.messages.append({'role': 'user', 'content': prompt})
-    with st.chat_message('user'):
-        st.markdown(prompt)
-
-    with st.chat_message('assistant'):
-        with st.spinner("Thinking..."):
-            full_reply = process_message(prompt)
-            if st.session_state.tts_enabled:
-                full_reply += text_to_speech(full_reply)
-            st.markdown(full_reply, unsafe_allow_html=True)
-            st.session_state.messages.append({'role': 'assistant', 'content': full_reply})
