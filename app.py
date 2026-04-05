@@ -34,7 +34,6 @@ html, body, .stApp {
     margin: 8px 0 !important;
     box-shadow: 0 2px 8px rgba(124,107,255,0.1) !important;
 }
-/* Suggestion buttons */
 .suggest-btn button {
     background: white !important;
     border: 1.5px solid #7c6bff !important;
@@ -46,39 +45,26 @@ html, body, .stApp {
     transition: all 0.2s !important;
     width: 100% !important;
 }
-.suggest-btn button:hover {
-    background: #ede9ff !important;
-    transform: translateY(-1px) !important;
-}
-.suggest-btn-pink button {
-    border-color: #ff6b9d !important;
-    color: #c2185b !important;
-}
+.suggest-btn button:hover { background: #ede9ff !important; }
+.suggest-btn-pink button { border-color: #ff6b9d !important; color: #c2185b !important; }
 .suggest-btn-pink button:hover { background: #ffe0ef !important; }
-.suggest-btn-green button {
-    border-color: #06d6a0 !important;
-    color: #087f5b !important;
-}
+.suggest-btn-green button { border-color: #06d6a0 !important; color: #087f5b !important; }
 .suggest-btn-green button:hover { background: #e0f5ee !important; }
-.suggest-btn-yellow button {
-    border-color: #ffd43b !important;
-    color: #856f00 !important;
-}
+.suggest-btn-yellow button { border-color: #ffd43b !important; color: #856f00 !important; }
 .suggest-btn-yellow button:hover { background: #fff9e0 !important; }
-/* Toolbar bottom */
-.stButton button {
-    border-radius: 12px !important;
-    font-weight: 600 !important;
-}
+.stButton button { border-radius: 12px !important; font-weight: 600 !important; }
 div[data-testid="stToggle"] label {
-    font-size: 0.82rem !important;
+    font-size: 0.82rem !important; font-weight: 600 !important; color: #5a3fcc !important;
+}
+[data-testid="stExpander"] {
+    border: 1.5px solid #ddd8ff !important;
+    border-radius: 14px !important;
+    background: white !important;
+}
+[data-testid="stExpander"] summary {
+    font-size: 0.85rem !important;
     font-weight: 600 !important;
     color: #5a3fcc !important;
-}
-/* Hide file uploader label */
-[data-testid="stFileUploaderDropzone"] {
-    padding: 8px !important;
-    border-radius: 10px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -237,7 +223,6 @@ Format: penjelasan pakai Bahasa Indonesia, contoh dalam English, friendly dan en
 
 def process_message(prompt):
     grammar_result = exact_match(prompt) or fuzzy_match(prompt, 0.82) or fuzzy_match(prompt, 0.65)
-
     if grammar_result:
         diff_html = format_diff(prompt, grammar_result['corrected'])
         conf = int(grammar_result['confidence'] * 100)
@@ -275,7 +260,7 @@ if 'uploaded_name' not in st.session_state:
 if 'trigger_prompt' not in st.session_state:
     st.session_state.trigger_prompt = None
 
-# ===== 4 SUGGESTION BUTTONS (hanya muncul saat belum ada chat) =====
+# ===== SUGGESTION BUTTONS (hanya saat belum ada chat) =====
 if len(st.session_state.messages) == 0:
     col1, col2, col3, col4 = st.columns(4)
     with col1:
@@ -299,7 +284,7 @@ if len(st.session_state.messages) == 0:
             st.session_state.trigger_prompt = "Berikan tips untuk meningkatkan skor TOEFL saya"
         st.markdown('</div>', unsafe_allow_html=True)
 
-# Process trigger from suggestion buttons
+# Process trigger dari suggestion buttons
 if st.session_state.trigger_prompt:
     prompt = st.session_state.trigger_prompt
     st.session_state.trigger_prompt = None
@@ -329,40 +314,38 @@ if prompt := st.chat_input("Ketik kalimat untuk dikoreksi, atau tanya apapun..."
             st.markdown(full_reply, unsafe_allow_html=True)
             st.session_state.messages.append({'role': 'assistant', 'content': full_reply})
 
-# ===== TOOLBAR: Suara + Upload + Clear — di BAWAH input =====
-st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
-st.markdown("<hr style='border:none;border-top:1px solid #e0e0f0;margin:4px 0 10px;'>", unsafe_allow_html=True)
+# ===== TOOLBAR dalam EXPANDER =====
+with st.expander("⚙️ Pengaturan & Upload File", expanded=False):
+    col_tts, col_upload, col_clear = st.columns([1.5, 3.5, 1.5])
 
-col_tts, col_upload, col_clear = st.columns([1.5, 3.5, 1.5])
+    with col_tts:
+        st.session_state.tts_enabled = st.toggle(
+            "🔊 Suara",
+            value=st.session_state.tts_enabled,
+            help="Aktifkan agar jawaban dibacakan otomatis"
+        )
 
-with col_tts:
-    st.session_state.tts_enabled = st.toggle(
-        "🔊 Suara",
-        value=st.session_state.tts_enabled,
-        help="Aktifkan agar jawaban dibacakan otomatis"
-    )
+    with col_upload:
+        uploaded_file = st.file_uploader(
+            "Upload PDF/Gambar",
+            type=['pdf', 'png', 'jpg', 'jpeg'],
+            label_visibility="collapsed",
+            help="Upload PDF atau gambar untuk dianalisis grammarnya"
+        )
+        if uploaded_file:
+            with st.spinner("Membaca file..."):
+                extracted = extract_text_from_file(uploaded_file)
+                if extracted:
+                    st.session_state.uploaded_text = extracted
+                    st.session_state.uploaded_name = uploaded_file.name
 
-with col_upload:
-    uploaded_file = st.file_uploader(
-        "Upload PDF/Gambar",
-        type=['pdf', 'png', 'jpg', 'jpeg'],
-        label_visibility="collapsed",
-        help="Upload PDF atau gambar untuk dianalisis grammarnya"
-    )
-    if uploaded_file:
-        with st.spinner("Membaca file..."):
-            extracted = extract_text_from_file(uploaded_file)
-            if extracted:
-                st.session_state.uploaded_text = extracted
-                st.session_state.uploaded_name = uploaded_file.name
-
-with col_clear:
-    if st.session_state.messages:
-        if st.button("🗑️ Clear", use_container_width=True):
-            st.session_state.messages = []
-            st.session_state.uploaded_text = None
-            st.session_state.uploaded_name = None
-            st.rerun()
+    with col_clear:
+        if st.session_state.messages:
+            if st.button("🗑️ Clear chat", use_container_width=True):
+                st.session_state.messages = []
+                st.session_state.uploaded_text = None
+                st.session_state.uploaded_name = None
+                st.rerun()
 
 # File info + Analisis button
 if st.session_state.uploaded_text and st.session_state.uploaded_name:
