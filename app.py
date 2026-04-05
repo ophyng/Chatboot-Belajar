@@ -20,18 +20,12 @@ html, body, .stApp {
     font-family: 'Lato', sans-serif !important;
 }
 #MainMenu, footer, header {visibility: hidden;}
+[data-testid="stSidebar"] { display: none !important; }
 [data-testid="stChatInput"] textarea {
     background: white !important;
     color: #1a1a2e !important;
     border: 2px solid #7c6bff !important;
     border-radius: 14px !important;
-}
-.stButton button {
-    background: linear-gradient(135deg, #7c6bff, #5a4fcf) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 12px !important;
-    font-weight: 700 !important;
 }
 [data-testid="stChatMessage"] {
     background: white !important;
@@ -40,25 +34,46 @@ html, body, .stApp {
     margin: 8px 0 !important;
     box-shadow: 0 2px 8px rgba(124,107,255,0.1) !important;
 }
-[data-testid="stSidebar"] {
-    display: none !important;
-}
-div[data-testid="stToggle"] label {
-    font-size: 0.85rem !important;
+/* Suggestion buttons */
+.suggest-btn button {
+    background: white !important;
+    border: 1.5px solid #7c6bff !important;
     color: #5a3fcc !important;
+    border-radius: 20px !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    padding: 6px 14px !important;
+    transition: all 0.2s !important;
+    width: 100% !important;
+}
+.suggest-btn button:hover {
+    background: #ede9ff !important;
+    transform: translateY(-1px) !important;
+}
+.suggest-btn-pink button {
+    border-color: #ff6b9d !important;
+    color: #c2185b !important;
+}
+.suggest-btn-pink button:hover { background: #ffe0ef !important; }
+.suggest-btn-green button {
+    border-color: #06d6a0 !important;
+    color: #087f5b !important;
+}
+.suggest-btn-green button:hover { background: #e0f5ee !important; }
+.suggest-btn-yellow button {
+    border-color: #ffd43b !important;
+    color: #856f00 !important;
+}
+.suggest-btn-yellow button:hover { background: #fff9e0 !important; }
+/* Toolbar bottom */
+.stButton button {
+    border-radius: 12px !important;
     font-weight: 600 !important;
 }
-.toolbar-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 0 4px 0;
-    flex-wrap: wrap;
-}
-.upload-label {
-    font-size: 0.82rem;
-    color: #5a3fcc;
-    font-weight: 600;
+div[data-testid="stToggle"] label {
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    color: #5a3fcc !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -208,6 +223,34 @@ def format_diff(wrong, correct):
             html += f'{t["word"]} '
     return html
 
+def process_message(prompt):
+    """Process a message and return the reply"""
+    grammar_result = exact_match(prompt) or fuzzy_match(prompt, 0.82) or fuzzy_match(prompt, 0.65)
+
+    if grammar_result:
+        diff_html = format_diff(prompt, grammar_result['corrected'])
+        conf = int(grammar_result['confidence'] * 100)
+        quick_reply = f"""
+<div style='background:#f8f4ff;border-left:4px solid #7c6bff;border-radius:12px;padding:1.2rem;margin:4px 0;'>
+  <div style='font-size:1rem;line-height:2;'>{diff_html}</div>
+  <div style='margin-top:10px;color:#087f5b;font-weight:700;'>✓ {grammar_result['corrected']}</div>
+  <div style='margin-top:8px;'>
+    <span style='background:#ede9ff;color:#5a3fcc;padding:3px 10px;border-radius:20px;font-size:0.78rem;'>{grammar_result['error_type']}</span>
+    <span style='color:#999;font-size:0.75rem;margin-left:8px;'>confidence: {conf}%</span>
+  </div>
+</div>"""
+        ai_messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": f"Kalimat '{prompt}' dikoreksi menjadi '{grammar_result['corrected']}'. Error: {grammar_result['error_type']}. Jelaskan kenapa salah dan apa aturannya. Maksimal 3 kalimat, pakai bahasa Indonesia."}
+        ]
+        explanation = ask_hf(ai_messages)
+        return quick_reply + f"\n\n📌 **Penjelasan:** {explanation}"
+    else:
+        ai_messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        for m in st.session_state.messages:
+            ai_messages.append({"role": m['role'], "content": m['content']})
+        return ask_hf(ai_messages)
+
 SYSTEM_PROMPT = f"""
 Kamu adalah GrammarAI — asisten bahasa Inggris yang cerdas, friendly, dan sangat membantu untuk pelajar Indonesia.
 Knowledge base: {guide[:3000]}
@@ -215,6 +258,7 @@ Kamu bisa koreksi grammar, translate, jelaskan rules, kasih contoh, jawab tentan
 Format: penjelasan pakai Bahasa Indonesia, contoh dalam English, friendly dan encouraging!
 """
 
+# ===== SESSION STATE =====
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 if 'tts_enabled' not in st.session_state:
@@ -223,26 +267,54 @@ if 'uploaded_text' not in st.session_state:
     st.session_state.uploaded_text = None
 if 'uploaded_name' not in st.session_state:
     st.session_state.uploaded_name = None
+if 'trigger_prompt' not in st.session_state:
+    st.session_state.trigger_prompt = None
 
-# Suggestion buttons
+# ===== 4 SUGGESTION BUTTONS (CLICKABLE) =====
 if len(st.session_state.messages) == 0:
-    st.markdown("""
-    <div style='display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:1.5rem;'>
-        <div style='background:#ede9ff;border:1px solid #7c6bff;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#5a3fcc;'>✏️ Koreksi kalimat saya</div>
-        <div style='background:#ffe0ef;border:1px solid #ff6b9d;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#c2185b;'>🌐 Translate ke English</div>
-        <div style='background:#e0f5ee;border:1px solid #06d6a0;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#087f5b;'>❓ Tanya grammar</div>
-        <div style='background:#fff9e0;border:1px solid #ffd43b;padding:8px 16px;border-radius:20px;font-size:0.85rem;color:#856f00;'>📚 Tips TOEFL/IELTS</div>
-    </div>
-    """, unsafe_allow_html=True)
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown('<div class="suggest-btn">', unsafe_allow_html=True)
+        if st.button("✏️ Koreksi kalimat saya", key="btn_koreksi", use_container_width=True):
+            st.session_state.trigger_prompt = "Tolong koreksi kalimat saya: She don't like coffee"
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown('<div class="suggest-btn suggest-btn-pink">', unsafe_allow_html=True)
+        if st.button("🌐 Translate ke English", key="btn_translate", use_container_width=True):
+            st.session_state.trigger_prompt = "Translate: saya sedang belajar bahasa Inggris setiap hari"
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col3:
+        st.markdown('<div class="suggest-btn suggest-btn-green">', unsafe_allow_html=True)
+        if st.button("❓ Tanya grammar", key="btn_grammar", use_container_width=True):
+            st.session_state.trigger_prompt = "Jelaskan perbedaan antara Simple Past dan Past Continuous"
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col4:
+        st.markdown('<div class="suggest-btn suggest-btn-yellow">', unsafe_allow_html=True)
+        if st.button("📚 Tips TOEFL/IELTS", key="btn_toefl", use_container_width=True):
+            st.session_state.trigger_prompt = "Berikan tips untuk meningkatkan skor TOEFL saya"
+        st.markdown('</div>', unsafe_allow_html=True)
 
-# Chat messages
+# Process trigger from suggestion buttons
+if st.session_state.trigger_prompt:
+    prompt = st.session_state.trigger_prompt
+    st.session_state.trigger_prompt = None
+    st.session_state.messages.append({'role': 'user', 'content': prompt})
+    with st.spinner("Thinking..."):
+        full_reply = process_message(prompt)
+        if st.session_state.tts_enabled:
+            full_reply += text_to_speech(full_reply)
+        st.session_state.messages.append({'role': 'assistant', 'content': full_reply})
+    st.rerun()
+
+# ===== CHAT HISTORY =====
 for msg in st.session_state.messages:
     with st.chat_message(msg['role']):
         st.markdown(msg['content'], unsafe_allow_html=True)
 
-# ===== TOOLBAR BAWAH =====
-# Baris toolbar: TTS toggle + Upload File — di atas input chat
-col_tts, col_upload, col_clear = st.columns([2, 3, 2])
+# ===== TOOLBAR: di bawah chat, di atas input =====
+st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+
+col_tts, col_upload, col_clear = st.columns([1.5, 3.5, 1.5])
 
 with col_tts:
     st.session_state.tts_enabled = st.toggle(
@@ -253,7 +325,7 @@ with col_tts:
 
 with col_upload:
     uploaded_file = st.file_uploader(
-        "📄 Upload PDF/Gambar",
+        "Upload",
         type=['pdf', 'png', 'jpg', 'jpeg'],
         label_visibility="collapsed",
         help="Upload PDF atau gambar untuk dianalisis grammarnya"
@@ -264,40 +336,39 @@ with col_upload:
             if extracted:
                 st.session_state.uploaded_text = extracted
                 st.session_state.uploaded_name = uploaded_file.name
-                st.success(f"✅ {uploaded_file.name} siap dianalisis!", icon="📄")
 
 with col_clear:
     if st.session_state.messages:
-        if st.button("🗑️ Clear Chat", use_container_width=True):
+        if st.button("🗑️ Clear", use_container_width=True):
             st.session_state.messages = []
             st.session_state.uploaded_text = None
             st.session_state.uploaded_name = None
             st.rerun()
 
-# Tampilkan info file yang siap dianalisis
+# File info + Analisis button
 if st.session_state.uploaded_text and st.session_state.uploaded_name:
-    col_info, col_analyze = st.columns([3, 2])
+    col_info, col_analyze = st.columns([3, 1.5])
     with col_info:
         st.markdown(
             f"<div style='background:#ede9ff;border:1px solid #7c6bff;padding:6px 12px;"
-            f"border-radius:10px;font-size:0.82rem;color:#5a3fcc;'>📄 {st.session_state.uploaded_name} "
-            f"({len(st.session_state.uploaded_text)} karakter)</div>",
+            f"border-radius:10px;font-size:0.82rem;color:#5a3fcc;margin-top:4px;'>"
+            f"📄 {st.session_state.uploaded_name} ({len(st.session_state.uploaded_text)} karakter)</div>",
             unsafe_allow_html=True
         )
     with col_analyze:
-        if st.button("🔍 Analisis File", use_container_width=True):
+        if st.button("🔍 Analisis", use_container_width=True):
             prompt_file = f"Tolong analisis dan koreksi grammar dari teks berikut:\n\n{st.session_state.uploaded_text[:1000]}"
             st.session_state.messages.append({'role': 'user', 'content': f'📄 Analisis file: {st.session_state.uploaded_name}'})
-            ai_messages = [
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": prompt_file}
-            ]
-            reply = ask_hf(ai_messages)
-            if st.session_state.tts_enabled:
-                reply += text_to_speech(reply)
-            st.session_state.messages.append({'role': 'assistant', 'content': reply})
-            st.session_state.uploaded_text = None
-            st.session_state.uploaded_name = None
+            with st.spinner("Menganalisis file..."):
+                reply = ask_hf([
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt_file}
+                ])
+                if st.session_state.tts_enabled:
+                    reply += text_to_speech(reply)
+                st.session_state.messages.append({'role': 'assistant', 'content': reply})
+                st.session_state.uploaded_text = None
+                st.session_state.uploaded_name = None
             st.rerun()
 
 # ===== CHAT INPUT =====
@@ -308,34 +379,8 @@ if prompt := st.chat_input("Ketik kalimat untuk dikoreksi, atau tanya apapun..."
 
     with st.chat_message('assistant'):
         with st.spinner("Thinking..."):
-            grammar_result = exact_match(prompt) or fuzzy_match(prompt, 0.82) or fuzzy_match(prompt, 0.65)
-
-            if grammar_result:
-                diff_html = format_diff(prompt, grammar_result['corrected'])
-                conf = int(grammar_result['confidence'] * 100)
-                quick_reply = f"""
-<div style='background:#f8f4ff;border-left:4px solid #7c6bff;border-radius:12px;padding:1.2rem;margin:4px 0;'>
-  <div style='font-size:1rem;line-height:2;'>{diff_html}</div>
-  <div style='margin-top:10px;color:#087f5b;font-weight:700;'>✓ {grammar_result['corrected']}</div>
-  <div style='margin-top:8px;'>
-    <span style='background:#ede9ff;color:#5a3fcc;padding:3px 10px;border-radius:20px;font-size:0.78rem;'>{grammar_result['error_type']}</span>
-    <span style='color:#999;font-size:0.75rem;margin-left:8px;'>confidence: {conf}%</span>
-  </div>
-</div>"""
-                ai_messages = [
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": f"Kalimat '{prompt}' dikoreksi menjadi '{grammar_result['corrected']}'. Error: {grammar_result['error_type']}. Jelaskan kenapa salah dan apa aturannya. Maksimal 3 kalimat, pakai bahasa Indonesia."}
-                ]
-                explanation = ask_hf(ai_messages)
-                full_reply = quick_reply + f"\n\n📌 **Penjelasan:** {explanation}"
-            else:
-                ai_messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-                for m in st.session_state.messages:
-                    ai_messages.append({"role": m['role'], "content": m['content']})
-                full_reply = ask_hf(ai_messages)
-
+            full_reply = process_message(prompt)
             if st.session_state.tts_enabled:
                 full_reply += text_to_speech(full_reply)
-
             st.markdown(full_reply, unsafe_allow_html=True)
             st.session_state.messages.append({'role': 'assistant', 'content': full_reply})
