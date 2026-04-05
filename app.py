@@ -40,6 +40,26 @@ html, body, .stApp {
     margin: 8px 0 !important;
     box-shadow: 0 2px 8px rgba(124,107,255,0.1) !important;
 }
+[data-testid="stSidebar"] {
+    display: none !important;
+}
+div[data-testid="stToggle"] label {
+    font-size: 0.85rem !important;
+    color: #5a3fcc !important;
+    font-weight: 600 !important;
+}
+.toolbar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0 4px 0;
+    flex-wrap: wrap;
+}
+.upload-label {
+    font-size: 0.82rem;
+    color: #5a3fcc;
+    font-weight: 600;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -116,7 +136,6 @@ def text_to_speech(text):
     try:
         clean = re.sub(r'<[^>]+>', '', text)
         clean = re.sub(r'[*#📌✓❌✅↗]', '', clean).strip()
-        # TTS tanpa batas karakter
         tts = gTTS(text=clean, lang='en', slow=False)
         with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as f:
             tts.save(f.name)
@@ -200,32 +219,12 @@ if 'messages' not in st.session_state:
     st.session_state.messages = []
 if 'tts_enabled' not in st.session_state:
     st.session_state.tts_enabled = False
+if 'uploaded_text' not in st.session_state:
+    st.session_state.uploaded_text = None
+if 'uploaded_name' not in st.session_state:
+    st.session_state.uploaded_name = None
 
-# Sidebar
-with st.sidebar:
-    st.markdown("### ⚙️ Pengaturan")
-    st.session_state.tts_enabled = st.toggle("🔊 Text to Speech", value=st.session_state.tts_enabled)
-    if st.session_state.tts_enabled:
-        st.success("Jawaban akan diputar otomatis!")
-    st.markdown("---")
-    st.markdown("### 📄 Upload File")
-    uploaded_file = st.file_uploader("Upload PDF atau Gambar", type=['pdf', 'png', 'jpg', 'jpeg'])
-    if uploaded_file:
-        with st.spinner("Membaca file..."):
-            extracted = extract_text_from_file(uploaded_file)
-            if extracted:
-                st.success(f"✅ Teks berhasil dibaca! ({len(extracted)} karakter)")
-                if st.button("🔍 Analisis teks ini"):
-                    prompt_file = f"Tolong analisis dan koreksi grammar dari teks berikut:\n\n{extracted[:1000]}"
-                    st.session_state.messages.append({'role': 'user', 'content': f'📄 Analisis file: {uploaded_file.name}'})
-                    ai_messages = [{"role": "system", "content": SYSTEM_PROMPT},
-                                   {"role": "user", "content": prompt_file}]
-                    reply = ask_hf(ai_messages)
-                    if st.session_state.tts_enabled:
-                        reply += text_to_speech(reply)
-                    st.session_state.messages.append({'role': 'assistant', 'content': reply})
-                    st.rerun()
-
+# Suggestion buttons
 if len(st.session_state.messages) == 0:
     st.markdown("""
     <div style='display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:1.5rem;'>
@@ -236,10 +235,72 @@ if len(st.session_state.messages) == 0:
     </div>
     """, unsafe_allow_html=True)
 
+# Chat messages
 for msg in st.session_state.messages:
     with st.chat_message(msg['role']):
         st.markdown(msg['content'], unsafe_allow_html=True)
 
+# ===== TOOLBAR BAWAH =====
+# Baris toolbar: TTS toggle + Upload File — di atas input chat
+col_tts, col_upload, col_clear = st.columns([2, 3, 2])
+
+with col_tts:
+    st.session_state.tts_enabled = st.toggle(
+        "🔊 Suara",
+        value=st.session_state.tts_enabled,
+        help="Aktifkan agar jawaban dibacakan otomatis"
+    )
+
+with col_upload:
+    uploaded_file = st.file_uploader(
+        "📄 Upload PDF/Gambar",
+        type=['pdf', 'png', 'jpg', 'jpeg'],
+        label_visibility="collapsed",
+        help="Upload PDF atau gambar untuk dianalisis grammarnya"
+    )
+    if uploaded_file:
+        with st.spinner("Membaca file..."):
+            extracted = extract_text_from_file(uploaded_file)
+            if extracted:
+                st.session_state.uploaded_text = extracted
+                st.session_state.uploaded_name = uploaded_file.name
+                st.success(f"✅ {uploaded_file.name} siap dianalisis!", icon="📄")
+
+with col_clear:
+    if st.session_state.messages:
+        if st.button("🗑️ Clear Chat", use_container_width=True):
+            st.session_state.messages = []
+            st.session_state.uploaded_text = None
+            st.session_state.uploaded_name = None
+            st.rerun()
+
+# Tampilkan info file yang siap dianalisis
+if st.session_state.uploaded_text and st.session_state.uploaded_name:
+    col_info, col_analyze = st.columns([3, 2])
+    with col_info:
+        st.markdown(
+            f"<div style='background:#ede9ff;border:1px solid #7c6bff;padding:6px 12px;"
+            f"border-radius:10px;font-size:0.82rem;color:#5a3fcc;'>📄 {st.session_state.uploaded_name} "
+            f"({len(st.session_state.uploaded_text)} karakter)</div>",
+            unsafe_allow_html=True
+        )
+    with col_analyze:
+        if st.button("🔍 Analisis File", use_container_width=True):
+            prompt_file = f"Tolong analisis dan koreksi grammar dari teks berikut:\n\n{st.session_state.uploaded_text[:1000]}"
+            st.session_state.messages.append({'role': 'user', 'content': f'📄 Analisis file: {st.session_state.uploaded_name}'})
+            ai_messages = [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": prompt_file}
+            ]
+            reply = ask_hf(ai_messages)
+            if st.session_state.tts_enabled:
+                reply += text_to_speech(reply)
+            st.session_state.messages.append({'role': 'assistant', 'content': reply})
+            st.session_state.uploaded_text = None
+            st.session_state.uploaded_name = None
+            st.rerun()
+
+# ===== CHAT INPUT =====
 if prompt := st.chat_input("Ketik kalimat untuk dikoreksi, atau tanya apapun..."):
     st.session_state.messages.append({'role': 'user', 'content': prompt})
     with st.chat_message('user'):
@@ -278,8 +339,3 @@ if prompt := st.chat_input("Ketik kalimat untuk dikoreksi, atau tanya apapun..."
 
             st.markdown(full_reply, unsafe_allow_html=True)
             st.session_state.messages.append({'role': 'assistant', 'content': full_reply})
-
-if st.session_state.messages:
-    if st.button("🗑️ Clear Chat"):
-        st.session_state.messages = []
-        st.rerun()
